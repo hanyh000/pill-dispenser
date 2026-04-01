@@ -73,12 +73,13 @@ uint16_t measure_distance(void) {
     _delay_us(10);
     PORTB &= ~(1 << TRIG); // Trigger Low
 
-    while (!(PINB & (1 << ECHO))); // Wait for Echo High
-    while (PINB & (1 << ECHO)) {
+    while (!(PINB & (1 << ECHO))); // Echo핀이 High가 될 때까지 대기
+    while (PINB & (1 << ECHO)) {   // Echo핀이 High인 동안 카운트
         _delay_us(1);
         count++;
-        if (count > 60000) break;
+        if (count > 60000) break;   // 타임아웃 처리
     }
+    // 거리 계산 로직 (음속 기반)
     return (uint16_t)((count * SOUND_VELOCITY) / (2UL * 10000UL));
 }
 
